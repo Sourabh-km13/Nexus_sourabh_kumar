@@ -1,0 +1,30 @@
+{
+  "name": "nexus_sourabh_kumar",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "nodemon server/server.js",
+    "worker:inventory": "node workers/inventory/v1.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "sequelize-cli": "^6.6.5"
+  },
+  "dependencies": {
+    "axios": "^1.19.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "lucide-react": "^1.31.0",
+    "mysql2": "^3.23.3",
+    "nodemon": "^3.1.14",
+    "react-router-dom": "^7.18.2",
+    "sequelize": "^6.37.8"
+  }
+}
