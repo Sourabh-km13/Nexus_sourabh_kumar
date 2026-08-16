@@ -13,6 +13,13 @@ class WorkerSupervisor {
         queue: 'inventory',
         version: 'v1',
         script: 'workers/inventory/v1.js'
+      },
+      'notifications-worker': {
+        id: 'notifications-worker',
+        name: 'Notifications Worker',
+        queue: 'notifications',
+        version: 'v1',
+        script: 'workers/inventory/v1.js'
       }
     };
   }

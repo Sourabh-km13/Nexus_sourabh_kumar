@@ -104,13 +104,26 @@ class JobService {
       const statuses = ['ACCEPTED', 'QUEUED', 'PROCESSING', 'COMPLETED', 'FAILED', 'RETRYING'];
       const metrics = {};
 
-      for (const status of statuses) {
-        const count = await db.Job.count({ where: { status } });
-        metrics[status.toLowerCase()] = count;
-      }
+      // 1. Find all unique queues in the system
+      const queues = await db.Job.findAll({
+        attributes: [[db.sequelize.fn('DISTINCT', db.sequelize.col('queueName')), 'queueName']],
+        raw: true
+      });
 
-      // Special aggregate for 'Pending' (ACCEPTED + QUEUED)
-      metrics.pending = metrics.accepted + metrics.queued;
+      for (const q of queues) {
+        const qName = q.queueName;
+        metrics[qName] = {};
+        
+        for (const status of statuses) {
+          const count = await db.Job.count({ 
+            where: { queueName: qName, status } 
+          });
+          metrics[qName][status.toLowerCase()] = count;
+        }
+        
+        // Aggregate 'Pending' (ACCEPTED + QUEUED) per queue
+        metrics[qName].pending = metrics[qName].accepted + metrics[qName].queued;
+      }
 
       return metrics;
     } catch (error) {

@@ -20,7 +20,7 @@ class Dispatcher {
     this.interval = setInterval(() => {
       this.dispatch();
       this.recoverZombies();
-    }, 5000);
+    }, 1000);
   }
 
   stop() {
@@ -34,7 +34,7 @@ class Dispatcher {
       // Find jobs that are still in ACCEPTED state
       const acceptedJobs = await db.Job.findAll({
         where: { status: 'ACCEPTED' },
-        limit: 10
+        limit: 50
       });
 
       if (acceptedJobs.length === 0) return;

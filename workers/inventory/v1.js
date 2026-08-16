@@ -15,16 +15,15 @@ setInterval(() => {
 }, 2000);
 
 async function runWorker() {
-  console.log('👷 Inventory Worker v1 started...');
+  const queueName = process.env.QUEUE_NAME || 'inventory';
+  console.log(`👷 Worker started for queue: ${queueName}...`);
   
   while (true) {
     try {
-      // Dequeue a job from the "inventory" queue
-      const message = await simpleQueue.dequeue('inventory');
+      // Dequeue a job from the configured queue
+      const message = await simpleQueue.dequeue(queueName);
       
       if (!message) {
-        // No work available, wait a bit
-        await new Promise(resolve => setTimeout(resolve, 1000));
         continue;
       }
 
@@ -44,19 +43,12 @@ async function runWorker() {
       // Mark as PROCESSING
       await jobService.updateJobStatus(jobId, 'PROCESSING');
 
-      // Simulate a realistic processing time (1-3 seconds)
-      const processingTime = Math.floor(Math.random() * 2000) + 1000;
-      await new Promise(resolve => setTimeout(resolve, processingTime));
-
       // 2. DETERMINISTIC LOGIC & FAILURE MODES
-      if (businessData.failureMode === 'crash') {
-        console.log(`💥 Simulated Crash for Job ${jobId}...`);
-        process.exit(1);
-      }
+      // Keep it simple: 70% Success, 30% Failure
+      const isSuccess = Math.random() > 0.3;
 
-      if (businessData.failureMode === 'slow') {
-        console.log(`⏳ Simulated Slow Processing for Job ${jobId}...`);
-        await new Promise(resolve => setTimeout(resolve, 10000));
+      if (!isSuccess) {
+        throw new Error('Random simulated failure for testing');
       }
 
       if (!businessData.productId || !businessData.quantity) {

@@ -46,10 +46,10 @@ export default function Dashboard() {
 
       <div className="stats-grid">
         <StatCard label="Total Workers" value={data?.workers?.length || 0} />
-        <StatCard label="Pending Jobs" value={data?.jobStats?.pending || 0} colorClass="badge-warning" />
-        <StatCard label="Processing" value={data?.jobStats?.processing || 0} colorClass="badge-info" />
-        <StatCard label="Completed" value={data?.jobStats?.completed || 0} colorClass="badge-success" />
-        <StatCard label="Failed" value={data?.jobStats?.failed || 0} colorClass="badge-error" />
+        <StatCard label="Pending Jobs" value={data?.totals?.pending || 0} colorClass="badge-warning" />
+        <StatCard label="Processing" value={data?.totals?.processing || 0} colorClass="badge-info" />
+        <StatCard label="Completed" value={data?.totals?.completed || 0} colorClass="badge-success" />
+        <StatCard label="Failed" value={data?.totals?.failed || 0} colorClass="badge-error" />
       </div>
 
       <div className="card">

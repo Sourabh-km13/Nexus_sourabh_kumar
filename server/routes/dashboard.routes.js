@@ -9,6 +9,22 @@ router.get('/', async (req, res) => {
     const workers = await db.Worker.findAll();
     const jobMetrics = await jobService.getMetrics();
     
+    // Flatten grouped metrics for the frontend if it expects a total, 
+    // but we'll keep the grouped structure to allow queue-specific sections in UI.
+    const totalStats = {
+      pending: 0,
+      processing: 0,
+      completed: 0,
+      failed: 0
+    };
+
+    Object.values(jobMetrics).forEach(qStats => {
+      totalStats.pending += (qStats.pending || 0);
+      totalStats.processing += (qStats.processing || 0);
+      totalStats.completed += (qStats.completed || 0);
+      totalStats.failed += (qStats.failed || 0);
+    });
+
     const events = await db.Event.findAll({
       limit: 100,
       order: [['createdAt', 'DESC']]
@@ -16,7 +32,8 @@ router.get('/', async (req, res) => {
 
     res.json({
       workers,
-      jobStats: jobMetrics,
+      jobStats: jobMetrics, // This now contains { inventory: {...}, notifications: {...} }
+      totals: totalStats,
       recentEvents: events
     });
   } catch (error) {
